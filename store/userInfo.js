@@ -5,7 +5,7 @@ const CHANGE_IMAGE = "CHANGE_IMAGE";
 
 // SELECTORS
 
-const MODULE_NAME = "userSettings" ;
+export const MODULE_NAME = "userSettings" ;
 
 export const getUserInfo = (state) =>   state[MODULE_NAME].userInfo ; 
 

@@ -1,12 +1,12 @@
 import {createStore , combineReducers} from "redux";
-import { listTypesReducer } from "./listTypes";
-import {userInfoReducer} from "./userInfo"
+import { listTypesReducer ,MODULE_NAME as projectsModuleName } from "./listTypes";
+import {userInfoReducer , MODULE_NAME as userSettingsModuleName} from "./userInfo"
 
 export const rootReducer = combineReducers( { 
-  shopList  :  listTypesReducer,
-  userSettings : userInfoReducer,
+  [projectsModuleName]  :  listTypesReducer,
+  [userSettingsModuleName] : userInfoReducer,
 } )
 
 export  const store = createStore(rootReducer);
 
-export default store ;
+export default store ;  

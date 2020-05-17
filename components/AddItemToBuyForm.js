@@ -36,6 +36,27 @@ export const AddItemToBuyForm = connect(mapStateToProps, { addItemToBuy ,editIte
     }
     const [inputValues, setInputValues] = useState(initialState);
 
+    const addItemHandler = () => {
+      if (inputValues.name.trim() != "" ) {
+        addItemToBuy({
+          ...inputValues,
+          sectionId,
+          listId,
+        })
+      }
+    }
+
+    const editItemHandler = () => {
+      if (inputValues.name.trim() != "" ) {
+        editItemToBuy({
+          ...inputValues,
+          sectionId,
+          listId,
+          listItemId,
+        })
+      }
+    }
+
     return (
       <KeyboardAvoidingView>
         <View style={[styles.container]}>
@@ -125,7 +146,7 @@ export const AddItemToBuyForm = connect(mapStateToProps, { addItemToBuy ,editIte
               <View style={styles.listTypeWrapper}>
                 <TouchableOpacity
                   style={[styles.listTypeTag]}
-                  key={695949}
+                  key={233332}
                   onPress={() => {
                     setInputValues((prev) => ({
                       ...prev,
@@ -145,7 +166,7 @@ export const AddItemToBuyForm = connect(mapStateToProps, { addItemToBuy ,editIte
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.listTypeTag]}
-                  key={695949}
+                  key={2334545}
                   onPress={() => {
                     setInputValues((prev) => ({
                       ...prev,
@@ -165,7 +186,7 @@ export const AddItemToBuyForm = connect(mapStateToProps, { addItemToBuy ,editIte
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.listTypeTag]}
-                  key={695949}
+                  key={5556665}
                   onPress={() => {
                     setInputValues((prev) => ({
                       ...prev,
@@ -185,7 +206,7 @@ export const AddItemToBuyForm = connect(mapStateToProps, { addItemToBuy ,editIte
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.listTypeTag]}
-                  key={695949}
+                  key={8876677}
                   onPress={() => {
                     setInputValues((prev) => ({
                       ...prev,
@@ -222,27 +243,16 @@ export const AddItemToBuyForm = connect(mapStateToProps, { addItemToBuy ,editIte
               title="Cancel"
             />
             <CustomBtn
-              onPress={() =>
-                editItemToBuy({
-                  ...inputValues,
-                  sectionId,
-                  listId,
-                  listItemId,
-                })
-              }
+              onPress={editItemHandler }
               width="medium"
               title="Update"
             />
           </View>
         ) : (
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <View style={{ justifyContent: "center", alignItems: "center"  }}>
             <CustomBtn
-              onPress={() =>
-                addItemToBuy({
-                  ...inputValues,
-                  sectionId,
-                  listId,
-                })
+              onPress={
+                addItemHandler
               }
               width="large"
               title="Add to list"
