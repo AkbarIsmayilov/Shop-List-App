@@ -6,6 +6,8 @@ const ADD_NEW_LIST = "ADD_NEW_LIST";
 const TOGGLE_ITEM_TO_BUY = "TOGGLE_ITEM_TO_BUY";
 const RESET_SHOPLIST = "RESET_SHOPLIST";
 const DELETE_ITEM_TO_BUY = "DELETE_ITEM_TO_BUY";
+const ADD_ITEM_TO_BUY = "ADD_ITEM_TO_BUY";
+const EDIT_ITEM_TO_BUY = "EDIT_ITEM_TO_BUY";
 
 // Selectors
 export const MODULE_NAME = "shopList";
@@ -80,7 +82,6 @@ let initialState = {
               name: "Avacado",
               amount: 0.5,
               completed: false,
-
               unitType: "kg",
             },
             {
@@ -163,10 +164,14 @@ export function listTypesReducer(state = initialState, { type, payload }) {
                 if (shopList.id === payload.listId) {
                   return {
                     ...shopList,
-                    itemsToBuy: [],
+                    itemsToBuy: shopList.itemsToBuy.map((listItem) => {
+                      return {
+                        ...listItem,
+                        completed: false,
+                      };
+                    }),
                   };
                 }
-                console.log("deleted");
                 return shopList;
               }),
             };
@@ -204,7 +209,6 @@ export function listTypesReducer(state = initialState, { type, payload }) {
         }),
       };
     case DELETE_ITEM_TO_BUY:
-      console.log("delete 123 reducer from")
       return {
         ...state,
         listTypes: state.listTypes.map((listType) => {
@@ -227,12 +231,75 @@ export function listTypesReducer(state = initialState, { type, payload }) {
           return listType;
         }),
       };
+    case ADD_ITEM_TO_BUY:
+      return {
+        ...state,
+        listTypes: state.listTypes.map((listType) => {
+          if (listType.id === payload.sectionId) {
+            return {
+              ...listType,
+              shopLists: listType.shopLists.map((shopList) => {
+                if (shopList.id === payload.listId) {
+                  return {
+                    ...shopList,
+                    itemsToBuy: [
+                      ...shopList.itemsToBuy,
+                      {
+                        id: `${Math.random()}${Date.now()}`,
+                        name: payload.name,
+                        amount: payload.amount,
+                        unitType: payload.unitType,
+                        completed: false ,
+                      },
+                    ],
+                  };
+                }
+                return shopList;
+              }),
+            };
+          }
+          console.log("returned wekwek")
+          return listType;
+        }),
+      };
+    case EDIT_ITEM_TO_BUY:
+      return {
+        ...state,
+        listTypes: state.listTypes.map((listType) => {
+          if (listType.id === payload.sectionId) {
+            console.log("əıəıə")
+            return {
+              ...listType,
+              shopLists: listType.shopLists.map((shopList) => {
+                if (shopList.id === payload.listId) {
+                  return {
+                    ...shopList,
+                    itemsToBuy: shopList.itemsToBuy.map((itemToBuy) => {
+                      if (itemToBuy.id === payload.listItemId) {
+                        return {
+                          ...itemToBuy,
+                          name: payload.name,
+                          amount: payload.amount,
+                          unitType: payload.unitType,
+                        };
+                      }
+                      return itemToBuy;
+                    }),
+                  };
+                }
+                return shopList;
+              }),
+            };
+          }
+          return listType;
+        }),
+      };
     default:
       return state;
   }
 }
 
-//ACTION CREATERS
+//ACTION CREATORS
 
 export const addNewList = (payload) => {
   return {
@@ -258,6 +325,20 @@ export const toggleItemToBuy = (payload) => {
 export const deleteItemToBuy = (payload) => {
   return {
     type: DELETE_ITEM_TO_BUY,
+    payload,
+  };
+};
+
+export const addItemToBuy = (payload) => {
+  return {
+    type: ADD_ITEM_TO_BUY,
+    payload,
+  };
+};
+
+export const editItemToBuy = (payload) => {
+  return {
+    type: EDIT_ITEM_TO_BUY,
     payload,
   };
 };

@@ -14,7 +14,7 @@ export const getUserInfo = (state) =>   state[MODULE_NAME].userInfo ;
 const initialState = {
   userInfo: {
     username: "guest_00",
-    imageURL: "https://medgoldresources.com/wp-content/uploads/2018/02/avatar-placeholder.gif",
+    imageURL: "https://www.pinclipart.com/picdir/middle/148-1486972_mystery-man-avatar-circle-clipart.png" ,
   },
 };
 

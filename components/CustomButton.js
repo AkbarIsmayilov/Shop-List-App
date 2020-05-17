@@ -12,8 +12,8 @@ import { COLORS } from "../styles/colors";
 
 const sizes = {
   small: "20%", 
-  medium: "45%",
-  large: "90%",
+  medium: "47%",
+  large: "92%",
 };
 
 export const CustomBtn = ({ width, title, onPress, style, ...rest }) => {
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderRadius: 50,
     backgroundColor: COLORS.red,
-    padding: 15,
+    padding: 12,
   },
   btn: {
     alignItems: "center",

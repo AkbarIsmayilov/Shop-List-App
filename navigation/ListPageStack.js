@@ -87,9 +87,9 @@ export const ListPageStack = ({ route, navigation }) => {
           headerRight: () => {
             return (
               <MaterialIcons
-                style={ { marginRight: 15 }}
+                style={{ marginRight: 15 }}
                 name="save"
-                onPress={() => navigation.openDrawer()}
+                
                 color="#fff"
                 size={30}
               />

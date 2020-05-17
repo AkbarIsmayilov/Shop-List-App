@@ -1,34 +1,111 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
 import { AppLoading } from "expo";
 import { Provider } from "react-redux";
+import { AppState, AsyncStorage ,Text, View} from "react-native";
 
 import { loadFonts } from "./styles/fonts";
 import { RootDrawer } from "./navigation";
-import store from "./store"
+import store from "./store";
 
-export default function App() {
-  const [loaded, setLoaded] = useState(false);
+/*export default class App extends React.Component {
+  
+  constructor(props) {
+    super (props) 
+    this.state  = {
+        loaded : false ,
 
-  if (!loaded) {
+    }
+  }
+
+  componentDidMount
+  (){ if (!this.state.loaded) {
     return (
-      <AppLoading startAsync={loadFonts} onFinish={() => setLoaded(true)} />
+      <AppLoading startAsync={loadFonts} onFinish={() => this.setState({loaded : true})} />
+    );
+  }}
+
+  componentWillUnmount() {
+    return (
+      _storeData(store)
+    )
+  }
+  
+  render() {
+    
+    return (
+      <Provider store={store}>
+        <RootDrawer />
+      </Provider>
     );
   }
 
-  return (
-    
-    <Provider store={store}>
-      <RootDrawer />
-    </Provider>
-  );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+*/
+
+export default class Root extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isStoreLoading: false,
+      store: store,
+      isFontLoaded: false,
+    };
+  }
+
+  componentWillMount() {
+    var self = this;
+    AppState.addEventListener("change", this._handleAppStateChange.bind(this));
+    this.setState({ isStoreLoading: true });
+    
+
+    AsyncStorage.getItem("completeStore")
+      .then((value) => {
+        if (value && value.length) {
+          let initialStore = JSON.parse(value);
+          self.setState({
+            store: createStore(reducers, initialStore, middleware),
+          });
+        } else {
+          self.setState({ store: store });
+        }
+        self.setState({ isStoreLoading: false });
+      })
+      .catch((error) => {
+        self.setState({ store: store });
+        self.setState({ isStoreLoading: false });
+      });
+  }
+  componentWillUnmount() {
+    AppState.removeEventListener(
+      "change",
+      this._handleAppStateChange.bind(this)
+    );
+  }
+  _handleAppStateChange(currentAppState) {
+    let storingValue = JSON.stringify(this.state.store.getState());
+    AsyncStorage.setItem("completeStore", storingValue);
+  }
+
+  render() {
+    if (this.state.isStoreLoading || !this.state.isFontLoaded) {
+      return (
+
+        <AppLoading
+      startAsync={loadFonts}
+      onFinish={() => this.setState({ isFontLoaded: true })}
+    >
+      <View>
+        <Text>123</Text>
+      </View>
+    </AppLoading>
+      )
+    } else {
+      return (
+        <Provider store={this.state.store}>
+          <RootDrawer />
+        </Provider>
+      );
+    }
+  }
+}

@@ -1,16 +1,26 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { CustomText } from "./CustomText";
 import { COLORS } from "../styles/colors";
 
-export const ItemToBuyCardEdit = ({ item , deleteHandler }) => {
-  console.log(deleteHandler)
+export const ItemToBuyCardEdit = ({
+  item,
+  listItemId,
+  deleteHandler,
+  goEditScreen,
+}) => {
   return (
     <View style={[styles.container]}>
       <View style={{ flexDirection: "row" }}>
-        <TouchableOpacity  style={styles.editIcon}>
+        <TouchableOpacity
+          onPress={goEditScreen}
+          style={[
+            styles.editIcon,
+            { opacity: listItemId === item.id ? 0.5 : 1 },
+          ]}
+        >
           <MaterialIcons name="edit" size={20} color="white" />
         </TouchableOpacity>
         <CustomText
@@ -27,12 +37,8 @@ export const ItemToBuyCardEdit = ({ item , deleteHandler }) => {
         >
           x{item.amount} {item.unitType}
         </CustomText>
-        <TouchableOpacity onPress={ deleteHandler } style={styles.deleteIcon}>
-          <MaterialIcons
-            name="close"
-            size={20}
-            color="white"
-          />
+        <TouchableOpacity onPress={deleteHandler} style={styles.deleteIcon}>
+          <MaterialIcons name="close" size={20} color="white" />
         </TouchableOpacity>
       </View>
     </View>

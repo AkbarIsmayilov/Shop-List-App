@@ -60,7 +60,7 @@ export const SingleListStaticScreen = connect(mapStateToProps, {
           </CustomText>
         </View>
         <FlatList
-          contentContainerStyle={{ marginVertical: 10 }}
+          contentContainerStyle={{ marginVertical: 10 ,paddingHorizontal : "3%" }}
           data={sortedList}
           renderItem={({ item }) => (
             <View style= {{ opacity : item.completed ? 0.5 : 1 }}>
@@ -86,7 +86,6 @@ export const SingleListStaticScreen = connect(mapStateToProps, {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: "4%",
     paddingVertical: 15,
     backgroundColor: "white",
     flex: 1,
@@ -99,6 +98,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerSection: {
+    paddingHorizontal: "4%",
     flexDirection: "row",
     justifyContent: "space-between",
   },

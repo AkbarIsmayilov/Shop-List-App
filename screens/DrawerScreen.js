@@ -4,7 +4,12 @@ import Constants from "expo-constants";
 import { connect } from "react-redux";
 
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { getUserInfo, changeUsername, changeImageURL } from "../store/userInfo";
+import {
+  getUserInfo,
+  changeUsername,
+  changeImageURL,
+  userInfoReducer,
+} from "../store/userInfo";
 import { COLORS } from "../styles/colors";
 import { CustomText } from "../components/CustomText";
 
@@ -19,9 +24,13 @@ export const DrawerScreen = connect(mapStateToProps, {
   return (
     <View style={styles.container}>
       <View style={styles.drawerTopSection}>
-        <View style={styles.userAvatar}>
-          <Image source={{ uri: userInfo.imageURL }} />
-        </View>
+          <Image
+            style={styles.tinyLogo}
+            source={{
+              uri: userInfo.imageURL,
+            }}
+          />
+
         <CustomText
           weight="regular"
           style={{
@@ -44,7 +53,9 @@ export const DrawerScreen = connect(mapStateToProps, {
           </CustomText>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate("ListPageStack" , {listType : "One Time" })}
+          onPress={() =>
+            navigation.navigate("ListPageStack", { listType: "One Time" })
+          }
           style={[styles.drawerItem]}
         >
           <CustomText weight="bold" style={styles.drawerItemText}>
@@ -52,7 +63,9 @@ export const DrawerScreen = connect(mapStateToProps, {
           </CustomText>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate("ListPageStack" , {listType : "Regular" })}
+          onPress={() =>
+            navigation.navigate("ListPageStack", { listType: "Regular" })
+          }
           style={[styles.drawerItem]}
         >
           <CustomText weight="bold" style={styles.drawerItemText}>
@@ -77,22 +90,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     marginTop: 20,
-    // alignItems: "center",
-    // justifyContent: "center",
-    // borderTopEndRadius: 20,
-    // borderTopStartRadius: 20,
   },
   containerWrapper: {
     backgroundColor: COLORS.red,
     flex: 1,
   },
-  userAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    borderWidth: 3,
-    borderColor: COLORS.red,
-  },
+
   drawerTopSection: {
     flexDirection: "row",
     marginLeft: 16,
@@ -101,7 +104,6 @@ const styles = StyleSheet.create({
   },
   drawerItem: {
     backgroundColor: "white",
-    // width : "85%",
     borderRadius: 15,
     paddingVertical: 7,
     alignItems: "center",
@@ -116,5 +118,14 @@ const styles = StyleSheet.create({
   drawerItemText: {
     fontSize: 14,
     color: COLORS.red,
+  },
+  tinyLogo: {
+    width: 50,
+    height: 50,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    borderWidth: 3,
+    borderColor: COLORS.red,
   },
 });

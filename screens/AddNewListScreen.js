@@ -31,8 +31,6 @@ export const AddNewListScreen = connect(mapStateToProps, { addNewList })(
     };
 
     const submitAddNewListForm = () => {
-      // Alert.alert ("Succesful Submit" )
-      // console.log(inputValues)
       props.addNewList(inputValues);
       props.navigation.navigate("ListPageStack");
       console.log(props.state);
@@ -53,21 +51,25 @@ export const AddNewListScreen = connect(mapStateToProps, { addNewList })(
           />
           <View style={styles.listTypeWrapper}>
             {props.listTypes.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                onPress={() => {
-                  inputChangeHandler("sectionId", item.id);
-                }}
-                style={[styles.listTypeTag]}
-              >
-                <CustomText weight="bold" style={{ fontSize: 12 }}>
-                  {item.name}
-                </CustomText>
-              </TouchableOpacity>
+                <TouchableOpacity
+                style={[styles.listTypeTag ]}
+                  key={item.id}
+                  onPress={() => {
+                    inputChangeHandler("sectionId", item.id);
+                  }}
+                >
+                <View
+                style={ { opacity: item.id === inputValues.sectionId ? 0.1 : 1 }}
+                >
+
+                  <CustomText weight="bold" style={{ fontSize: 12 }}>
+                    {item.name}
+                  </CustomText>
+                </View>
+                </TouchableOpacity>
             ))}
           </View>
           <CustomBtn
-            
             onPress={() => submitAddNewListForm()}
             width="large"
             title="CREaTE LIST"
