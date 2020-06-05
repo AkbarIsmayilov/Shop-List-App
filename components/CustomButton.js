@@ -11,9 +11,9 @@ import { CustomText } from "./CustomText";
 import { COLORS } from "../styles/colors";
 
 const sizes = {
-  small: "20%", 
+  small: "20%",
   medium: "47%",
-  large: "92%",
+  large: "90%",
 };
 
 export const CustomBtn = ({ width, title, onPress, style, ...rest }) => {
@@ -21,24 +21,19 @@ export const CustomBtn = ({ width, title, onPress, style, ...rest }) => {
     Platform.OS === "android" ? TouchableNativeFeedback : TouchableOpacity;
   return (
     <TouchableOpacity
-      onPress= {onPress}
-      style={[
-        styles.container,
-        style,
-        { width: sizes[width] || sizes.medium },
-      ]}
+      onPress={onPress}
+      style={[styles.container, style, { width: sizes[width] || sizes.medium }]}
     >
-        <View {...rest} style={[styles.btn, ]}>
-          <CustomText weight="bold" style={styles.title}>
-            {title}
-          </CustomText>
-        </View>
+      <View {...rest} style={[styles.btn]}>
+        <CustomText weight="bold" style={styles.title}>
+          {title}
+        </CustomText>
+      </View>
     </TouchableOpacity>
   );
 };
 const styles = StyleSheet.create({
   container: {
-    
     justifyContent: "center",
     overflow: "hidden",
     borderRadius: 50,

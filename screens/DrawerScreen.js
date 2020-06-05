@@ -1,15 +1,9 @@
 import React from "react";
 import { TouchableOpacity, StyleSheet, Text, View, Image } from "react-native";
-import Constants from "expo-constants";
 import { connect } from "react-redux";
 
-import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import {
-  getUserInfo,
-  changeUsername,
-  changeImageURL,
-  userInfoReducer,
-} from "../store/userInfo";
+import { DrawerContentScrollView } from "@react-navigation/drawer";
+import { getUserInfo } from "../store/userInfo";
 import { COLORS } from "../styles/colors";
 import { CustomText } from "../components/CustomText";
 
@@ -17,19 +11,19 @@ const mapStateToProps = (state) => {
   return { userInfo: getUserInfo(state) };
 };
 
-export const DrawerScreen = connect(mapStateToProps, {
-  changeImageURL,
-  changeUsername,
-})(({ userInfo, navigation }) => {
+export const DrawerScreen = connect(
+  mapStateToProps,
+  {}
+)(({ userInfo, navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.drawerTopSection}>
-          <Image
-            style={styles.tinyLogo}
-            source={{
-              uri: userInfo.imageURL,
-            }}
-          />
+        <Image
+          style={styles.tinyLogo}
+          source={{
+            uri: userInfo.imageURL,
+          }}
+        />
 
         <CustomText
           weight="regular"
@@ -54,7 +48,11 @@ export const DrawerScreen = connect(mapStateToProps, {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("ListPageStack", { listType: "One Time" })
+            navigation.navigate("ListPageStack", {
+              listType: "One Time",
+              screen: "ListPage",
+              params: { listType: "One Time" },
+            })
           }
           style={[styles.drawerItem]}
         >
@@ -64,7 +62,11 @@ export const DrawerScreen = connect(mapStateToProps, {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("ListPageStack", { listType: "Regular" })
+            navigation.navigate("ListPageStack", {
+              listType: "Regular",
+              screen: "ListPage",
+              params: { listType: "Regular" },
+            })
           }
           style={[styles.drawerItem]}
         >

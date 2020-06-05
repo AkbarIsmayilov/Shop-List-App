@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput } from "react-native";
 import { connect } from "react-redux";
 
 import { COLORS } from "../styles/colors";
-import { CustomText, CustomBtn } from "../components";
+import { CustomText, CustomBtn, Field } from "../components";
 import { getUserInfo, changeImageURL, changeUsername } from "../store/userInfo";
 
 const mapStateToProps = (state) => {
@@ -37,30 +37,21 @@ export const UserSettingsScreen = connect(mapStateToProps, {
   return (
     <View style={styles.containerWrapper}>
       <View style={styles.container}>
-        <CustomText
-          weight="medium"
-          style={{ fontSize: 13, color: COLORS.dark, marginVertical: 5 }}
-        >
-          username
-        </CustomText>
-        <TextInput
+        <Field
+          width="90%"
+          label="username"
           value={inputValues.username}
-          onChangeText={(value) => inputChangeHandler("username", value)}
-          style={styles.textInput}
+          onValueChange={(value) => inputChangeHandler("username", value)}
         />
-        <CustomText
-          weight="medium"
-          style={{ fontSize: 13, color: COLORS.dark, marginVertical: 5 }}
-        >
-          avatar uri
-        </CustomText>
-        <TextInput
+        <Field
+          width="90%"
+          label="avatar uri"
           value={inputValues.imageURL}
-          onChangeText={(value) => inputChangeHandler("imageURL", value)}
-          style={styles.textInput}
+          onValueChange={(value) => inputChangeHandler("imageURL", value)}
         />
+
         <CustomBtn
-        style={{marginTop : 10}}
+          style={{ marginTop: 10 }}
           onPress={() => submitAddNewListForm()}
           title="save changes"
           width="large"
@@ -76,24 +67,11 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 20,
     backgroundColor: "white",
     alignItems: "center",
-    // justifyContent: "center",
     flex: 1,
   },
   containerWrapper: {
     backgroundColor: COLORS.red,
 
     flex: 1,
-  },
-  textInput: {
-    backgroundColor: COLORS.lightGrey,
-    borderRadius: 50,
-    width: "90%",
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    fontFamily: "MontserratRegular",
-    fontWeight: "500",
-    fontSize: 18,
-    alignItems: "center",
-    textAlign: "center",
   },
 });

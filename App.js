@@ -1,7 +1,7 @@
 import React from "react";
 import { AppLoading } from "expo";
 import { Provider } from "react-redux";
-import { AppState, AsyncStorage ,Text, View} from "react-native";
+import { AppState, AsyncStorage, Text, View } from "react-native";
 
 import { loadFonts } from "./styles/fonts";
 import { RootDrawer } from "./navigation";
@@ -53,11 +53,10 @@ export default class Root extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     var self = this;
     AppState.addEventListener("change", this._handleAppStateChange.bind(this));
     this.setState({ isStoreLoading: true });
-    
 
     AsyncStorage.getItem("completeStore")
       .then((value) => {
@@ -76,30 +75,29 @@ export default class Root extends React.Component {
         self.setState({ isStoreLoading: false });
       });
   }
+  _handleAppStateChange(currentAppState) {
+    let storingValue = JSON.stringify(this.state.store.getState());
+    AsyncStorage.setItem("completeStore", storingValue);
+  }
   componentWillUnmount() {
     AppState.removeEventListener(
       "change",
       this._handleAppStateChange.bind(this)
     );
   }
-  _handleAppStateChange(currentAppState) {
-    let storingValue = JSON.stringify(this.state.store.getState());
-    AsyncStorage.setItem("completeStore", storingValue);
-  }
 
   render() {
     if (this.state.isStoreLoading || !this.state.isFontLoaded) {
       return (
-
         <AppLoading
-      startAsync={loadFonts}
-      onFinish={() => this.setState({ isFontLoaded: true })}
-    >
-      <View>
-        <Text>123</Text>
-      </View>
-    </AppLoading>
-      )
+          startAsync={loadFonts}
+          onFinish={() => this.setState({ isFontLoaded: true })}
+        >
+          <View>
+            <Text>...loading .... </Text>
+          </View>
+        </AppLoading>
+      );
     } else {
       return (
         <Provider store={this.state.store}>

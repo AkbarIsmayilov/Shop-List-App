@@ -1,26 +1,16 @@
 import React from "react";
-import { Button } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import {
-  ListPageScreen,
-  SingleListStaticScreen,
-  SingleListEditScreen,
-} from "../screens";
+import { ListPageScreen, SingleListEditScreen } from "../screens";
 import { COLORS } from "../styles/colors";
 const { Navigator, Screen } = createStackNavigator();
 
 export const ListPageStack = ({ route, navigation }) => {
-  let currentScreen = "One Time";
-  if (route.params) {
-    currentScreen = route.params.listType;
-  }
-
   return (
     <Navigator
       screenOptions={{
-        title: `${currentScreen} Lists`,
+        title: `${route.params?.listType || "One Time"} Lists`,
 
         headerStyle: {
           height: 90,
@@ -47,15 +37,11 @@ export const ListPageStack = ({ route, navigation }) => {
         },
       }}
     >
+      <Screen name="ListPage" component={ListPageScreen} />
+
       <Screen
-        name="ListPage"
-        component={() => (
-          <ListPageScreen navigation={navigation} typeOfList={currentScreen} />
-        )}
-      />
-      <Screen
-        name="SingleListStatic"
-        component={SingleListStaticScreen}
+        name="SingleListEdit"
+        component={SingleListEditScreen}
         options={({ route }) => ({
           title: route.params.title,
           headerTitleStyle: { fontSize: 18, fontFamily: "MontserratBold" },
@@ -69,27 +55,9 @@ export const ListPageStack = ({ route, navigation }) => {
                     title: route.params.title,
                     sectionId: route.params.sectionId,
                     listId: route.params.listId,
+                    isEditMode: true,
                   })
                 }
-                color="#fff"
-                size={30}
-              />
-            );
-          },
-        })}
-      />
-      <Screen
-        name="SingleListEdit"
-        component={SingleListEditScreen}
-        options={({ route }) => ({
-          title: route.params.title,
-          headerTitleStyle: { fontSize: 18, fontFamily: "MontserratBold" },
-          headerRight: () => {
-            return (
-              <MaterialIcons
-                style={{ marginRight: 15 }}
-                name="save"
-                
                 color="#fff"
                 size={30}
               />

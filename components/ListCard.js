@@ -12,19 +12,21 @@ import { CustomText } from "./CustomText";
 import { COLORS } from "../styles/colors";
 import { ProgressBar } from "./ProgressBar";
 
-export const ListCard = ({ shopList ,listType  }) => {
+export const ListCard = ({ shopList, listType }) => {
   const totalItems = shopList.itemsToBuy.length;
-  const boughtItems = shopList.itemsToBuy.filter((item) => item.completed === true ).length;
-    
-  const isCompleted =( listType === "One Time" && boughtItems/totalItems === 1 );
+  const boughtItems = shopList.itemsToBuy.filter(
+    (item) => item.completed === true
+  ).length;
+
+  const isCompleted = listType === "One Time" && boughtItems / totalItems === 1;
   const Touchable =
     Platform.OS === "android" ? TouchableNativeFeedback : TouchableOpacity;
   return (
-    <View style={[styles.shopList , { opacity : isCompleted ? 0.5 : 1 }]}>
+    <View style={[styles.shopList, { opacity: isCompleted ? 0.5 : 1 }]}>
       <View style={styles.descriptionWrapper}>
         <View style={styles.headingWrapper}>
           <CustomText weight="bold" style={{ lineHeight: 22, fontSize: 18 }}>
-            {shopList.name ? shopList.name : "no name " }
+            {shopList.name ? shopList.name : "no name "}
           </CustomText>
           <CustomText weight="bold" style={{ lineHeight: 22, fontSize: 13 }}>
             {boughtItems} / {totalItems}

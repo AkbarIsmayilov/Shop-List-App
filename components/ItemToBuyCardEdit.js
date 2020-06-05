@@ -6,23 +6,27 @@ import { CustomText } from "./CustomText";
 import { COLORS } from "../styles/colors";
 
 export const ItemToBuyCardEdit = ({
+  isEditMode,
   item,
   listItemId,
   deleteHandler,
   goEditScreen,
+  onLongPress,
 }) => {
   return (
-    <View style={[styles.container]}>
+    <TouchableOpacity onLongPress={onLongPress} style={[styles.container]}>
       <View style={{ flexDirection: "row" }}>
-        <TouchableOpacity
-          onPress={goEditScreen}
-          style={[
-            styles.editIcon,
-            { opacity: listItemId === item.id ? 0.5 : 1 },
-          ]}
-        >
-          <MaterialIcons name="edit" size={20} color="white" />
-        </TouchableOpacity>
+        {isEditMode && (
+          <TouchableOpacity
+            onPress={goEditScreen}
+            style={[
+              styles.editIcon,
+              { opacity: listItemId === item.id ? 0.5 : 1 },
+            ]}
+          >
+            <MaterialIcons name="edit" size={20} color="white" />
+          </TouchableOpacity>
+        )}
         <CustomText
           style={{ paddingHorizontal: 10, padding: 7 }}
           weight="medium"
@@ -37,11 +41,13 @@ export const ItemToBuyCardEdit = ({
         >
           x{item.amount} {item.unitType}
         </CustomText>
-        <TouchableOpacity onPress={deleteHandler} style={styles.deleteIcon}>
-          <MaterialIcons name="close" size={20} color="white" />
-        </TouchableOpacity>
+        {isEditMode && (
+          <TouchableOpacity onPress={deleteHandler} style={styles.deleteIcon}>
+            <MaterialIcons name="close" size={20} color="white" />
+          </TouchableOpacity>
+        )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -52,7 +58,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderRadius: 20,
     // padding: 7,
-    marginVertical: 5,
+    marginVertical: 7,
     borderColor: COLORS.borderYellow,
     borderWidth: 3,
   },

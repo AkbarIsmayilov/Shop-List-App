@@ -6,25 +6,27 @@ import {
   View,
   Alert,
 } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { connect } from "react-redux";
 
 import {
   getListTypes,
   deleteItemToBuy,
-  addItemToBuy,
+  toggleItemToBuy,
+  resetShoplist,
 } from "../store/listTypes";
 import { COLORS } from "../styles/colors";
 import { ItemToBuyCardEdit, AddItemToBuyForm } from "../components";
-
+import { CustomText } from "../components/CustomText";
+import { Header } from "./SingleListEdit/Header";
 const mapStateToProps = (state) => {
   return { listTypes: getListTypes(state) };
 };
 
 export const SingleListEditScreen = connect(mapStateToProps, {
   deleteItemToBuy,
-  addItemToBuy,
-})(({ listTypes, navigation, route, deleteItemToBuy }) => {
+  toggleItemToBuy,
+})(({ listTypes, navigation, route, deleteItemToBuy, toggleItemToBuy }) => {
   const itemsToBuyList = listTypes
     .filter((listType) => listType.id === route.params.sectionId)[0]
     .shopLists.filter((item) => item.id === route.params.listId)[0].itemsToBuy;
@@ -34,106 +36,123 @@ export const SingleListEditScreen = connect(mapStateToProps, {
     if (a.completed) return 1;
     if (b.completed) return -1;
   });
-  console.log(route);
-  return (
-    <View style={styles.containerWrapper}>
-      <View style={styles.outerWrapper}>
-        <AddItemToBuyForm
-        navigation={navigation}
-          sectionId={route.params.sectionId}
-          listId={route.params.listId}
-          listItemId={route.params.listItemId ? route.params.listItemId : 0}
-        />
 
-        <View style={styles.horizontalLine} />
-        <View style={styles.container}>
+  const totalItems = itemsToBuyList.length;
+  const boughtItems = itemsToBuyList.filter((item) => item.completed === true)
+    .length;
+
+  const resetShoplistHandler = () => {
+    resetShoplist({
+      sectionId: route.params.sectionId,
+      listId: route.params.listId,
+    });
+  };
+
+  const deleteHandler = (itemId) => {
+    Alert.alert(
+      " Delete ",
+      "No Way to  Undo ",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () =>
+            deleteItemToBuy({
+              sectionId: route.params.sectionId,
+              listId: route.params.listId,
+              listItemId: itemId,
+            }),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const goEditScreenHandler = (itemId) => {
+    navigation.replace("SingleListEdit", {
+      sectionId: route.params.sectionId,
+      listId: route.params.listId,
+      listItemId: itemId,
+      isEditMode: true,
+    });
+  };
+
+  const toggleItemHandler = (itemId) => {
+    toggleItemToBuy({
+      sectionId: route.params.sectionId,
+      listId: route.params.listId,
+      listItemId: itemId,
+    });
+  };
+  return (
+    <KeyboardAvoidingView style={styles.containerWrapper}>
+      <View style={styles.outerWrapper}>
+        {route.params.isEditMode && (
+          <AddItemToBuyForm
+            navigation={navigation}
+            sectionId={route.params.sectionId}
+            listId={route.params.listId}
+            listItemId={route.params.listItemId ? route.params.listItemId : 0}
+          />
+        )}
+
+        {!route.params.isEditMode && (
+          <Header
+            boughtItems={boughtItems}
+            totalItems={totalItems}
+            route={route}
+            resetShoplistHandler={resetShoplistHandler}
+          />
+        )}
+        <ScrollView>
           <FlatList
             contentContainerStyle={{
-              marginVertical: 20,
+              marginTop: !route.params?.isEditMode ? 10 : 25,
               paddingHorizontal: "3%",
             }}
             data={sortedList}
             renderItem={({ item }) => (
-              <ItemToBuyCardEdit
-                deleteHandler={() => {
-                  Alert.alert(
-                    " Delete ",
-                    "No Way to Undo ",
-                    [
-                      {
-                        text: "Cancel",
-                        onPress: () => console.log("Cancel Pressed"),
-                        style: "cancel",
-                      },
-                      {
-                        text: "Delete",
-                        onPress: () =>
-                          deleteItemToBuy({
-                            sectionId: route.params.sectionId,
-                            listId: route.params.listId,
-                            listItemId: item.id,
-                          }),
-                      },
-                    ],
-                    { cancelable: false }
-                  );
+              <View
+                style={{
+                  opacity: item.completed && !route.params.isEditMode ? 0.5 : 1,
                 }}
-                goEditScreen={() =>
-                  navigation.replace("SingleListEdit", {
-                    sectionId: route.params.sectionId,
-                    listId: route.params.listId,
-                    listItemId: item.id,
-                  })
-                }
-                key={item.id}
-                style={[styles.itemToBuyCard]}
-                item={item}
-                listItemId={
-                  route.params.listItemId ? route.params.listItemId : 0
-                }
-              />
+              >
+                <ItemToBuyCardEdit
+                  isEditMode={route.params.isEditMode}
+                  onLongPress={() => toggleItemHandler(item.id)}
+                  deleteHandler={() => deleteHandler(item.id)}
+                  goEditScreen={() => goEditScreenHandler(item.id)}
+                  key={item.id}
+                  item={item}
+                  style={[styles.itemToBuyCard]}
+                  itemId={item.id}
+                  listItemId={
+                    route.params.listItemId ? route.params.listItemId : 0
+                  }
+                />
+              </View>
             )}
           />
-        </View>
+        </ScrollView>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 });
 
 const styles = StyleSheet.create({
-  container: {},
   outerWrapper: {
-    paddingVertical: 15,
+    paddingTop: 11,
     backgroundColor: "white",
     flex: 1,
     borderTopEndRadius: 20,
     borderTopStartRadius: 20,
   },
-  horizontalLine: {
-    width: "100%",
-    marginTop: 20,
-    height: 3,
-    backgroundColor: COLORS.lightGrey,
-  },
-  itemToBuyCard: {},
   containerWrapper: {
     backgroundColor: COLORS.red,
     flex: 1,
-  },
-  headerSection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  resetBtn: {
-    backgroundColor: COLORS.red,
-    width: "20%",
-    paddingVertical: 4,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  resetBtnText: {
-    fontSize: 10,
-    color: "white",
   },
 });

@@ -11,13 +11,29 @@ import { connect } from "react-redux";
 import { CustomText } from "./CustomText";
 import { COLORS } from "../styles/colors";
 import { CustomBtn } from "./CustomButton";
-import { addItemToBuy, getListTypes,editItemToBuy } from "../store/listTypes";
+import { addItemToBuy, getListTypes, editItemToBuy } from "../store/listTypes";
+import { RadioGroup } from "./RadioGroup";
+import { COUNT_TYPES } from "../utils/dataStorage";
+import { Field } from "./Field";
+import { CountField } from "./CountField";
+
 const mapStateToProps = (state) => {
   return { listTypes: getListTypes(state) };
 };
 
-export const AddItemToBuyForm = connect(mapStateToProps, { addItemToBuy ,editItemToBuy })(
-  ({ sectionId, listId, listItemId, listTypes, addItemToBuy,editItemToBuy , navigation }) => {
+export const AddItemToBuyForm = connect(mapStateToProps, {
+  addItemToBuy,
+  editItemToBuy,
+})(
+  ({
+    sectionId,
+    listId,
+    listItemId,
+    listTypes,
+    addItemToBuy,
+    editItemToBuy,
+    navigation,
+  }) => {
     const findItemToBuy = () => {
       return listTypes
         .filter((listType) => listType.id === sectionId)[0]
@@ -28,7 +44,7 @@ export const AddItemToBuyForm = connect(mapStateToProps, { addItemToBuy ,editIte
     var initialState = {
       name: "",
       amount: 1,
-      unitType: "",
+      unitType: "kg",
     };
 
     if (listItemId) {
@@ -37,25 +53,33 @@ export const AddItemToBuyForm = connect(mapStateToProps, { addItemToBuy ,editIte
     const [inputValues, setInputValues] = useState(initialState);
 
     const addItemHandler = () => {
-      if (inputValues.name.trim() != "" ) {
+      if (inputValues.name.trim() != "") {
         addItemToBuy({
           ...inputValues,
           sectionId,
           listId,
-        })
+        });
       }
-    }
+    };
 
     const editItemHandler = () => {
-      if (inputValues.name.trim() != "" ) {
+      if (inputValues.name.trim() != "") {
         editItemToBuy({
           ...inputValues,
           sectionId,
           listId,
           listItemId,
-        })
+        });
       }
-    }
+    };
+
+    const fieldChangeHandler = (key, value) => {
+      setInputValues((prev) => ({
+        ...prev,
+        [key]: value,
+      }));
+      // console.log("inputValues  : ", inputValues);
+    };
 
     return (
       <KeyboardAvoidingView>
@@ -63,170 +87,29 @@ export const AddItemToBuyForm = connect(mapStateToProps, { addItemToBuy ,editIte
           <View style={styles.inputsWrapper}>
             <View style={styles.headerInputsContainer}>
               <View style={styles.headerInputs}>
-                <CustomText
-                  weight="medium"
-                  style={{
-                    fontSize: 13,
-                    color: COLORS.dark,
-                    marginVertical: 5,
-                    textAlign: "center",
-                  }}
-                >
-                  position name
-                </CustomText>
-                <TextInput
+                <Field
+                  width="100%"
+                  label="position name"
                   value={inputValues.name}
-                  onChangeText={(value) => {
-                    console.log(inputValues);
-                    setInputValues((prev) => ({ ...prev, name: value }));
+                  onValueChange={(value) => {
+                    fieldChangeHandler("name", value);
                   }}
-                  style={styles.textInput}
                 />
               </View>
               <View style={styles.headerInputsAmountContainer}>
-                <CustomText
-                  weight="medium"
-                  style={{
-                    fontSize: 13,
-                    color: COLORS.dark,
-                    marginVertical: 5,
-                    textAlign: "center",
-                  }}
-                >
-                  amount
-                </CustomText>
-                <View style={styles.amountInput}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (inputValues.amount !== 0) {
-                        setInputValues((prev) => ({
-                          ...prev,
-                          amount: --prev.amount,
-                        }));
-                      }
-                    }}
-                  >
-                    <CustomText weight="bold" style={{ fontSize: 18 }}>
-                      -
-                    </CustomText>
-                  </TouchableOpacity>
-                  <TextInput
-                    value={String(inputValues.amount)}
-                    onChangeText={(value) => {
-                      if (value < 0) {
-                        setInputValues((prev) => ({ ...prev, amount: 0 }));
-                      } else {
-                        setInputValues((prev) => ({ ...prev, amount: +value }));
-                        console.log(inputValues.amount);
-                      }
-                    }}
-                    keyboardType="numeric"
-                    style={styles.amountTextInput}
-                  />
-                  <TouchableOpacity
-                    onPress={() =>
-                      setInputValues((prev) => ({
-                        ...prev,
-                        amount: ++prev.amount,
-                      }))
-                    }
-                  >
-                    <CustomText
-                      keyboardType="numericd"
-                      weight="bold"
-                      style={{ fontSize: 18 }}
-                    >
-                      +
-                    </CustomText>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-            <View>
-              <View style={styles.listTypeWrapper}>
-                <TouchableOpacity
-                  style={[styles.listTypeTag]}
-                  key={233332}
-                  onPress={() => {
-                    setInputValues((prev) => ({
-                      ...prev,
-                      unitType: "kg",
-                    }));
-                  }}
-                >
-                  <View
-                    style={{
-                      opacity: "kg" === inputValues.unitType ? 0.1 : 1,
-                    }}
-                  >
-                    <CustomText weight="bold" style={{ fontSize: 12 }}>
-                      kg
-                    </CustomText>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.listTypeTag]}
-                  key={2334545}
-                  onPress={() => {
-                    setInputValues((prev) => ({
-                      ...prev,
-                      unitType: "pkg",
-                    }));
-                  }}
-                >
-                  <View
-                    style={{
-                      opacity: "pkg" === inputValues.unitType ? 0.1 : 1,
-                    }}
-                  >
-                    <CustomText weight="bold" style={{ fontSize: 12 }}>
-                      pkg
-                    </CustomText>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.listTypeTag]}
-                  key={5556665}
-                  onPress={() => {
-                    setInputValues((prev) => ({
-                      ...prev,
-                      unitType: "litre",
-                    }));
-                  }}
-                >
-                  <View
-                    style={{
-                      opacity: "litre" === inputValues.unitType ? 0.1 : 1,
-                    }}
-                  >
-                    <CustomText weight="bold" style={{ fontSize: 12 }}>
-                      litre
-                    </CustomText>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.listTypeTag]}
-                  key={8876677}
-                  onPress={() => {
-                    setInputValues((prev) => ({
-                      ...prev,
-                      unitType: "bottle",
-                    }));
-                  }}
-                >
-                  <View
-                    style={{
-                      opacity: "bottle" === inputValues.unitType ? 0.1 : 1,
-                    }}
-                  >
-                    <CustomText weight="bold" style={{ fontSize: 12 }}>
-                      bottle
-                    </CustomText>
-                  </View>
-                </TouchableOpacity>
+                <CountField
+                  amountbyProp={+inputValues.amount}
+                  onValueChange={(value) => fieldChangeHandler("amount", value)}
+                />
               </View>
             </View>
           </View>
+
+          <RadioGroup
+            options={COUNT_TYPES}
+            onValueChange={(value) => fieldChangeHandler("unitType", value)}
+            value={inputValues.unitType}
+          />
         </View>
         {listItemId ? (
           <View
@@ -243,22 +126,21 @@ export const AddItemToBuyForm = connect(mapStateToProps, { addItemToBuy ,editIte
               title="Cancel"
             />
             <CustomBtn
-              onPress={editItemHandler }
+              onPress={editItemHandler}
               width="medium"
               title="Update"
             />
           </View>
         ) : (
-          <View style={{ justifyContent: "center", alignItems: "center"  }}>
+          <View style={{ justifyContent: "center", alignItems: "center" }}>
             <CustomBtn
-              onPress={
-                addItemHandler
-              }
+              onPress={addItemHandler}
               width="large"
               title="Add to list"
             />
           </View>
         )}
+        <View style={styles.horizontalLine} />
       </KeyboardAvoidingView>
     );
   }
@@ -325,5 +207,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "23%",
+  },
+  horizontalLine: {
+    width: "100%",
+    marginTop: 20,
+    height: 3,
+    backgroundColor: COLORS.lightGrey,
   },
 });

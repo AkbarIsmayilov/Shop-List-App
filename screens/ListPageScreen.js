@@ -12,23 +12,11 @@ const mapStateToProps = (state) => {
 };
 
 export const ListPageScreen = connect(mapStateToProps)(
-  ({ typeOfList, listTypes, navigation }) => {
-    let currentScreen = "One Time";
-    if (typeOfList) {
-      currentScreen = typeOfList;
-    }
-
+  ({ listTypes, navigation, route }) => {
+    const currentScreen = route.params?.listType || "One Time";
     const sortedList = listTypes.filter(
       (listType) => listType.name === currentScreen
     )[0];
-
-    const navigateToSingleListStatic = () => {
-      navigation.navigate("SingleListStatic", {
-        sectionId: sortedList.id,
-      });
-    };
-
-    // console.log (navigation);
 
     return (
       <View style={styles.containerWrapper}>
@@ -38,11 +26,12 @@ export const ListPageScreen = connect(mapStateToProps)(
             renderItem={({ item }) => (
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate("SingleListStatic", {
+                  navigation.navigate("SingleListEdit", {
                     sectionId: sortedList.id,
-                    listId  : item.id , 
-                    title : item.name,
-                    currentScreen 
+                    listId: item.id,
+                    title: item.name,
+                    currentScreen,
+                    isEditMode: false,
                   })
                 }
                 style={styles.shopListCard}

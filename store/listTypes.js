@@ -1,7 +1,5 @@
 // Action Types
 
-import { AsyncStorage } from "react-native";
-
 const ADD_NEW_LIST = "ADD_NEW_LIST";
 const TOGGLE_ITEM_TO_BUY = "TOGGLE_ITEM_TO_BUY";
 const RESET_SHOPLIST = "RESET_SHOPLIST";
@@ -105,38 +103,13 @@ let initialState = {
   ],
 };
 
-const _loadInitialState = async () => {
-  try {
-    let raw_value = await AsyncStorage.getItem("listTypeState");
-    let value = await raw_value.json();
-    if (value != null) {
-      initialState = { ...value };
-    } else {
-      _storeData();
-    }
-  } catch (error) {}
-};
-
-const _storeData = async (state) => {
-  try {
-    await AsyncStorage.setItem(
-      "listTypeState",
-      JSON.stringify(state ? state : initialState)
-    );
-  } catch (error) {
-    // Error saving data
-  }
-};
-
-_loadInitialState();
-
 export function listTypesReducer(state = initialState, { type, payload }) {
   switch (type) {
     case ADD_NEW_LIST:
       return {
         ...state,
         listTypes: state.listTypes.map((item) => {
-          if (payload.sectionId === item.id) {
+          if (payload.sectionName === item.name) {
             return {
               ...item,
               shopLists: [
@@ -249,7 +222,7 @@ export function listTypesReducer(state = initialState, { type, payload }) {
                         name: payload.name,
                         amount: payload.amount,
                         unitType: payload.unitType,
-                        completed: false ,
+                        completed: false,
                       },
                     ],
                   };
@@ -258,7 +231,7 @@ export function listTypesReducer(state = initialState, { type, payload }) {
               }),
             };
           }
-          console.log("returned wekwek")
+          console.log("returned wekwek");
           return listType;
         }),
       };
@@ -267,7 +240,6 @@ export function listTypesReducer(state = initialState, { type, payload }) {
         ...state,
         listTypes: state.listTypes.map((listType) => {
           if (listType.id === payload.sectionId) {
-            console.log("əıəıə")
             return {
               ...listType,
               shopLists: listType.shopLists.map((shopList) => {
