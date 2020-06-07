@@ -28,7 +28,11 @@ export const AddNewListScreen = connect(null, { addNewList })((props) => {
 
   const submitAddNewListForm = () => {
     props.addNewList(inputValues);
-    props.navigation.navigate("ListPageStack");
+    props.navigation.navigate("ListPageStack", {
+      listType: inputValues.sectionName,
+      screen: "ListPage",
+      params: { listType: inputValues.sectionName },
+    });
   };
 
   return (

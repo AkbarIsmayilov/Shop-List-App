@@ -1,12 +1,6 @@
-import React from "react";
-import {
-  StyleSheet,
-  KeyboardAvoidingView,
-  TouchableOpacity,
-  View,
-  Alert,
-} from "react-native";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
+import React, { useState } from "react";
+import { StyleSheet, KeyboardAvoidingView, View, Alert } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { connect } from "react-redux";
 
 import {
@@ -16,11 +10,20 @@ import {
   resetShoplist,
 } from "../store/listTypes";
 import { COLORS } from "../styles/colors";
-import { ItemToBuyCardEdit, AddItemToBuyForm } from "../components";
-import { CustomText } from "../components/CustomText";
+import { AddItemToBuyForm } from "../components";
 import { Header } from "./SingleListEdit/Header";
+import { ItemsToBuyList } from "./SingleListEdit/ItemsToBuyList";
 const mapStateToProps = (state) => {
   return { listTypes: getListTypes(state) };
+};
+
+const singleEditItemInitialState = {
+  status: false,
+  product: {
+    name: "",
+    amount: 1,
+    unitType: "kg",
+  },
 };
 
 export const SingleListEditScreen = connect(mapStateToProps, {
@@ -36,6 +39,10 @@ export const SingleListEditScreen = connect(mapStateToProps, {
     if (a.completed) return 1;
     if (b.completed) return -1;
   });
+
+  const [singleEditItemState, setSingleEditItemState] = useState(
+    singleEditItemInitialState
+  );
 
   const totalItems = itemsToBuyList.length;
   const boughtItems = itemsToBuyList.filter((item) => item.completed === true)
@@ -71,13 +78,15 @@ export const SingleListEditScreen = connect(mapStateToProps, {
       { cancelable: false }
     );
   };
+  const resetFormData = () =>
+    setSingleEditItemState(singleEditItemInitialState);
 
-  const goEditScreenHandler = (itemId) => {
-    navigation.replace("SingleListEdit", {
-      sectionId: route.params.sectionId,
-      listId: route.params.listId,
-      listItemId: itemId,
-      isEditMode: true,
+  const onCancelEditItem = () => resetFormData();
+
+  const goEditScreenHandler = (item) => {
+    setSingleEditItemState({
+      status: true,
+      product: item,
     });
   };
 
@@ -88,15 +97,17 @@ export const SingleListEditScreen = connect(mapStateToProps, {
       listItemId: itemId,
     });
   };
+
   return (
     <KeyboardAvoidingView style={styles.containerWrapper}>
       <View style={styles.outerWrapper}>
         {route.params.isEditMode && (
           <AddItemToBuyForm
+            onCancelEditItem={onCancelEditItem}
             navigation={navigation}
             sectionId={route.params.sectionId}
             listId={route.params.listId}
-            listItemId={route.params.listItemId ? route.params.listItemId : 0}
+            singleEditItemState={singleEditItemState}
           />
         )}
 
@@ -108,36 +119,14 @@ export const SingleListEditScreen = connect(mapStateToProps, {
             resetShoplistHandler={resetShoplistHandler}
           />
         )}
-        <ScrollView>
-          <FlatList
-            contentContainerStyle={{
-              marginTop: !route.params?.isEditMode ? 10 : 25,
-              paddingHorizontal: "3%",
-            }}
-            data={sortedList}
-            renderItem={({ item }) => (
-              <View
-                style={{
-                  opacity: item.completed && !route.params.isEditMode ? 0.5 : 1,
-                }}
-              >
-                <ItemToBuyCardEdit
-                  isEditMode={route.params.isEditMode}
-                  onLongPress={() => toggleItemHandler(item.id)}
-                  deleteHandler={() => deleteHandler(item.id)}
-                  goEditScreen={() => goEditScreenHandler(item.id)}
-                  key={item.id}
-                  item={item}
-                  style={[styles.itemToBuyCard]}
-                  itemId={item.id}
-                  listItemId={
-                    route.params.listItemId ? route.params.listItemId : 0
-                  }
-                />
-              </View>
-            )}
-          />
-        </ScrollView>
+        <ItemsToBuyList
+          route={route}
+          toggleItemHandler={toggleItemHandler}
+          deleteHandler={deleteHandler}
+          goEditScreenHandler={goEditScreenHandler}
+          sortedList={sortedList}
+          itemOnEditByProp={singleEditItemState.product?.id}
+        />
       </View>
     </KeyboardAvoidingView>
   );

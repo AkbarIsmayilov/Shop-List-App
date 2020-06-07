@@ -1,14 +1,7 @@
-import React, { useState } from "react";
-import {
-  View,
-  KeyboardAvoidingView,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, KeyboardAvoidingView, StyleSheet, Alert } from "react-native";
 import { connect } from "react-redux";
 
-import { CustomText } from "./CustomText";
 import { COLORS } from "../styles/colors";
 import { CustomBtn } from "./CustomButton";
 import { addItemToBuy, getListTypes, editItemToBuy } from "../store/listTypes";
@@ -28,49 +21,59 @@ export const AddItemToBuyForm = connect(mapStateToProps, {
   ({
     sectionId,
     listId,
-    listItemId,
-    listTypes,
+    onCancelEditItem,
     addItemToBuy,
     editItemToBuy,
     navigation,
+    singleEditItemState,
   }) => {
-    const findItemToBuy = () => {
-      return listTypes
-        .filter((listType) => listType.id === sectionId)[0]
-        .shopLists.filter((item) => item.id === listId)[0]
-        .itemsToBuy.filter((item) => item.id === listItemId)[0];
-    };
-
-    var initialState = {
+    const [inputValues, setInputValues] = useState({
       name: "",
       amount: 1,
       unitType: "kg",
+    });
+    const resetForm = () =>
+      setInputValues({
+        name: "",
+        amount: 1,
+        unitType: "kg",
+      });
+    const validateForm = () => {
+      if (inputValues.name.trim() === "") {
+        Alert.alert("Position name can not be empty ");
+        return false;
+      }
+      return true;
     };
 
-    if (listItemId) {
-      initialState = findItemToBuy();
-    }
-    const [inputValues, setInputValues] = useState(initialState);
-
     const addItemHandler = () => {
-      if (inputValues.name.trim() != "") {
+      if (validateForm()) {
         addItemToBuy({
           ...inputValues,
           sectionId,
           listId,
         });
+        onCancelEditItem();
+        resetForm();
       }
     };
 
     const editItemHandler = () => {
-      if (inputValues.name.trim() != "") {
+      if (validateForm()) {
         editItemToBuy({
           ...inputValues,
           sectionId,
           listId,
-          listItemId,
+          listItemId: inputValues.id,
         });
+        onCancelEditItem();
+        resetForm();
       }
+    };
+
+    const onCancelEditItemHandler = () => {
+      onCancelEditItem();
+      resetForm();
     };
 
     const fieldChangeHandler = (key, value) => {
@@ -78,8 +81,14 @@ export const AddItemToBuyForm = connect(mapStateToProps, {
         ...prev,
         [key]: value,
       }));
-      // console.log("inputValues  : ", inputValues);
     };
+    useEffect(() => {
+      if (singleEditItemState.status) {
+        console.log(singleEditItemState.product);
+
+        setInputValues(singleEditItemState.product);
+      }
+    }, [singleEditItemState]);
 
     return (
       <KeyboardAvoidingView>
@@ -104,24 +113,17 @@ export const AddItemToBuyForm = connect(mapStateToProps, {
               </View>
             </View>
           </View>
-
           <RadioGroup
             options={COUNT_TYPES}
             onValueChange={(value) => fieldChangeHandler("unitType", value)}
             value={inputValues.unitType}
+            style={{ marginVertical: 10 }}
           />
         </View>
-        {listItemId ? (
-          <View
-            style={{
-              flexDirection: "row",
-              paddingHorizontal: "4%",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
+        {singleEditItemState.status ? (
+          <View style={styles.rowBtns}>
             <CustomBtn
-              onPress={() => navigation.goBack()}
+              onPress={onCancelEditItemHandler}
               width="medium"
               title="Cancel"
             />
@@ -213,5 +215,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
     height: 3,
     backgroundColor: COLORS.lightGrey,
+  },
+  rowBtns: {
+    flexDirection: "row",
+    paddingHorizontal: "4%",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });

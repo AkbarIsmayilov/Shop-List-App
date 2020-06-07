@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { CustomText } from "./CustomText";
 import { COLORS } from "../styles/colors";
-import { COUNT_TYPES } from "../utils/dataStorage";
 
-export const RadioGroup = ({ options, value, onValueChange }) => {
+export const RadioGroup = ({ options, value, onValueChange, style }) => {
   return (
-    <View style={styles.row}>
+    <View style={[style, styles.row]}>
       {options.map((option) => (
         <TouchableOpacity
           style={[
@@ -23,11 +22,13 @@ export const RadioGroup = ({ options, value, onValueChange }) => {
             style={[
               styles.radioButton,
               {
-                opacity: value === option ? 1 : 0.1,
+                opacity: value === option ? 1 : 0.5,
               },
             ]}
           >
-            <CustomText weight="bold"> {option} </CustomText>
+            <CustomText weight={value === option ? "bold" : "regular"}>
+              {option}
+            </CustomText>
           </View>
         </TouchableOpacity>
       ))}
@@ -38,12 +39,11 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 8,
   },
   radioButton: {
     backgroundColor: COLORS.lightGrey,
-    borderRadius: 40,
-    paddingVertical: 13,
+    borderRadius: 20,
+    paddingVertical: 11,
     alignItems: "center",
   },
 });

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -8,7 +8,7 @@ import { COLORS } from "../styles/colors";
 export const ItemToBuyCardEdit = ({
   isEditMode,
   item,
-  listItemId,
+  isOnEdit,
   deleteHandler,
   goEditScreen,
   onLongPress,
@@ -17,15 +17,20 @@ export const ItemToBuyCardEdit = ({
     <TouchableOpacity onLongPress={onLongPress} style={[styles.container]}>
       <View style={{ flexDirection: "row" }}>
         {isEditMode && (
-          <TouchableOpacity
-            onPress={goEditScreen}
-            style={[
-              styles.editIcon,
-              { opacity: listItemId === item.id ? 0.5 : 1 },
-            ]}
-          >
-            <MaterialIcons name="edit" size={20} color="white" />
-          </TouchableOpacity>
+          <View style={[styles.editIcon, { opacity: isOnEdit ? 0.1 : 1 }]}>
+            <TouchableOpacity
+              key={item.id}
+              onPress={goEditScreen}
+              style={[styles.editIcon]}
+            >
+              <MaterialIcons
+                key={item.id}
+                name="edit"
+                size={20}
+                color="white"
+              />
+            </TouchableOpacity>
+          </View>
         )}
         <CustomText
           style={{ paddingHorizontal: 10, padding: 7 }}
