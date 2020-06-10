@@ -19,12 +19,11 @@ export const AddItemToBuyForm = connect(mapStateToProps, {
   editItemToBuy,
 })(
   ({
-    sectionId,
     listId,
     onCancelEditItem,
     addItemToBuy,
     editItemToBuy,
-    navigation,
+    route,
     singleEditItemState,
   }) => {
     const [inputValues, setInputValues] = useState({
@@ -50,7 +49,7 @@ export const AddItemToBuyForm = connect(mapStateToProps, {
       if (validateForm()) {
         addItemToBuy({
           ...inputValues,
-          sectionId,
+          listType: route.params.listType,
           listId,
         });
         onCancelEditItem();
@@ -62,7 +61,7 @@ export const AddItemToBuyForm = connect(mapStateToProps, {
       if (validateForm()) {
         editItemToBuy({
           ...inputValues,
-          sectionId,
+          listType: route.params.listType,
           listId,
           listItemId: inputValues.id,
         });
@@ -84,8 +83,6 @@ export const AddItemToBuyForm = connect(mapStateToProps, {
     };
     useEffect(() => {
       if (singleEditItemState.status) {
-        console.log(singleEditItemState.product);
-
         setInputValues(singleEditItemState.product);
       }
     }, [singleEditItemState]);

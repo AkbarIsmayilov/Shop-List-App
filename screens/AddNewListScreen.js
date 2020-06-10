@@ -17,6 +17,7 @@ export const AddNewListScreen = connect(null, { addNewList })((props) => {
   const [inputValues, setInputValues] = useState({
     name: "",
     sectionName: "One Time",
+    id: "",
   });
 
   const inputChangeHandler = (key, value) => {
@@ -26,12 +27,20 @@ export const AddNewListScreen = connect(null, { addNewList })((props) => {
     }));
   };
 
-  const submitAddNewListForm = () => {
-    props.addNewList(inputValues);
-    props.navigation.navigate("ListPageStack", {
-      listType: inputValues.sectionName,
-      screen: "ListPage",
-      params: { listType: inputValues.sectionName },
+  const submitAddNewListForm = async () => {
+    const listId = `${Math.random()}${Date.now()}`;
+    await props.addNewList({ ...inputValues, listId });
+
+    await props.navigation.navigate("ListPageStack", {
+      listId,
+      isEditMode: true,
+      screen: "SingleListEdit",
+      params: {
+        listId,
+        listType: inputValues.sectionName,
+        isEditMode: true,
+        title: inputValues.name,
+      },
     });
   };
 

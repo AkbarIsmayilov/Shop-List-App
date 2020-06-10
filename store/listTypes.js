@@ -1,8 +1,11 @@
+import { SET_APP_DATA } from "../utils/AS_utils";
+
 // Action Types
 
 const ADD_NEW_LIST = "ADD_NEW_LIST";
 const TOGGLE_ITEM_TO_BUY = "TOGGLE_ITEM_TO_BUY";
 const RESET_SHOPLIST = "RESET_SHOPLIST";
+const DELETE_SHOPLIST = "DELETE_SHOPLIST";
 const DELETE_ITEM_TO_BUY = "DELETE_ITEM_TO_BUY";
 const ADD_ITEM_TO_BUY = "ADD_ITEM_TO_BUY";
 const EDIT_ITEM_TO_BUY = "EDIT_ITEM_TO_BUY";
@@ -11,6 +14,10 @@ const EDIT_ITEM_TO_BUY = "EDIT_ITEM_TO_BUY";
 export const MODULE_NAME = "shopList";
 
 export const getListTypes = (state) => state[MODULE_NAME].listTypes;
+export const getItemsToBuy = (state, route) =>
+  state[MODULE_NAME].listTypes
+    .filter((listType) => listType.name === route.params.listType)[0]
+    .shopLists.filter((item) => item.id === route.params.listId)[0]?.itemsToBuy;
 
 // REDUCERS
 
@@ -39,20 +46,6 @@ let initialState = {
               amount: 0.5,
               unitType: "kg",
               completed: true,
-            },
-            {
-              id: `${Math.random()}${Date.now()}`,
-              name: "Rye",
-              completed: true,
-              amount: 3,
-              unitType: "pkg",
-            },
-            {
-              id: `${Math.random()}${Date.now()}`,
-              completed: true,
-              name: "Orangejuice",
-              amount: 1,
-              unitType: "litr",
             },
           ],
         },
@@ -105,6 +98,12 @@ let initialState = {
 
 export function listTypesReducer(state = initialState, { type, payload }) {
   switch (type) {
+    case SET_APP_DATA:
+      return {
+        ...state,
+        ...payload.lists,
+      };
+
     case ADD_NEW_LIST:
       return {
         ...state,
@@ -115,7 +114,7 @@ export function listTypesReducer(state = initialState, { type, payload }) {
               shopLists: [
                 ...item.shopLists,
                 {
-                  id: `${Math.random()}${Date.now()}`,
+                  id: payload.listId,
                   name: payload.name,
                   completed: false,
                   itemsToBuy: [],
@@ -126,7 +125,7 @@ export function listTypesReducer(state = initialState, { type, payload }) {
           return item;
         }),
       };
-    case RESET_SHOPLIST:
+    case RESET_SHOPLIST: {
       return {
         ...state,
         listTypes: state.listTypes.map((listType) => {
@@ -145,18 +144,35 @@ export function listTypesReducer(state = initialState, { type, payload }) {
                     }),
                   };
                 }
-                return shopList;
               }),
             };
           }
           return listType;
         }),
       };
+    }
+    case DELETE_SHOPLIST:
+      return {
+        ...state,
+
+        listTypes: state.listTypes.map((listType) => {
+          if (listType.name === payload.listType) {
+            return {
+              ...listType,
+              shopLists: listType.shopLists.filter(
+                (shopList) => shopList.id !== payload.listId
+              ),
+            };
+          }
+          return listType;
+        }),
+      };
+
     case TOGGLE_ITEM_TO_BUY:
       return {
         ...state,
         listTypes: state.listTypes.map((listType) => {
-          if (listType.id === payload.sectionId) {
+          if (listType.name === payload.listType) {
             return {
               ...listType,
               shopLists: listType.shopLists.map((shopList) => {
@@ -185,7 +201,7 @@ export function listTypesReducer(state = initialState, { type, payload }) {
       return {
         ...state,
         listTypes: state.listTypes.map((listType) => {
-          if (listType.id === payload.sectionId) {
+          if (listType.name === payload.listType) {
             return {
               ...listType,
               shopLists: listType.shopLists.map((shopList) => {
@@ -208,7 +224,7 @@ export function listTypesReducer(state = initialState, { type, payload }) {
       return {
         ...state,
         listTypes: state.listTypes.map((listType) => {
-          if (listType.id === payload.sectionId) {
+          if (listType.name === payload.listType) {
             return {
               ...listType,
               shopLists: listType.shopLists.map((shopList) => {
@@ -239,7 +255,7 @@ export function listTypesReducer(state = initialState, { type, payload }) {
       return {
         ...state,
         listTypes: state.listTypes.map((listType) => {
-          if (listType.id === payload.sectionId) {
+          if (listType.name === payload.listType) {
             return {
               ...listType,
               shopLists: listType.shopLists.map((shopList) => {
@@ -283,6 +299,13 @@ export const addNewList = (payload) => {
 export const resetShoplist = (payload) => {
   return {
     type: RESET_SHOPLIST,
+    payload,
+  };
+};
+
+export const deleteShoplist = (payload) => {
+  return {
+    type: DELETE_SHOPLIST,
     payload,
   };
 };

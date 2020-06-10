@@ -37,6 +37,11 @@ export const ListPageStack = ({ route, navigation }) => {
         name="SingleListEdit"
         component={SingleListEditScreen}
         options={({ route }) => ({
+          title: route.params.title,
+          headerTitleStyle: {
+            fontFamily: "MontserratBold",
+            fontSize: 18,
+          },
           headerRight: () => {
             return (
               <MaterialIcons

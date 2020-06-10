@@ -4,17 +4,12 @@ import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { COLORS } from "../../styles/colors";
 import { CustomText } from "../../components";
 
-export const Header = ({
-  route,
-  resetShoplistHandler,
-  totalItems,
-  boughtItems,
-}) => {
+export const Header = ({ route, onResetShoplist, totalItems, boughtItems }) => {
   return (
     <View style={styles.headerSection}>
       {route.params.currentScreen === "Regular" ? (
         <TouchableOpacity
-          onPress={resetShoplistHandler}
+          onPress={() => onResetShoplist()}
           style={styles.resetBtn}
         >
           <CustomText weight="bold" style={styles.resetBtnText}>
