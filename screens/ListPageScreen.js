@@ -12,8 +12,6 @@ const mapStateToProps = (state) => {
 
 export const ListPageScreen = connect(mapStateToProps, { deleteShoplist })(
   ({ listTypes, navigation, route, deleteShoplist }) => {
-    console.log("route +++++ ", route);
-
     const currentScreen = route.params?.listType || "One Time";
     const sortedList = listTypes.filter(
       (listType) => listType.name === currentScreen
@@ -49,6 +47,7 @@ export const ListPageScreen = connect(mapStateToProps, { deleteShoplist })(
             data={sortedList.shopLists}
             renderItem={({ item }) => (
               <TouchableOpacity
+                key={item.id}
                 onLongPress={() => deleteListHandler(item.id, item.name)}
                 onPress={() =>
                   navigation.navigate("SingleListEdit", {

@@ -40,8 +40,6 @@ export const SingleListEditScreen = connect(mapStateToProps, {
     toggleItemToBuy,
     resetShoplist,
   }) => {
-    console.log("route--- from Single List ", route);
-
     const sortedList = itemsToBuyList
       ? itemsToBuyList.sort((a, b) => {
           if (a.completed === b.completed) return 0;
@@ -102,7 +100,7 @@ export const SingleListEditScreen = connect(mapStateToProps, {
 
     const toggleItemHandler = (itemId) => {
       toggleItemToBuy({
-        sectionId: route.params.sectionId,
+        listType: route.params.listType,
         listId: route.params.listId,
         listItemId: itemId,
       });

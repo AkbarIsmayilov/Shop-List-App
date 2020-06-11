@@ -27,71 +27,13 @@ let initialState = {
       id: `${Math.random()}${Date.now()}`,
       name: "Regular",
       completed: false,
-      shopLists: [
-        {
-          id: `${Math.random()}${Date.now()}`,
-          name: "Everything for Breakfast",
-          completed: false,
-          itemsToBuy: [
-            {
-              id: `${Math.random()}${Date.now()}`,
-              name: "Apple",
-              amount: 2,
-              unitType: "kg",
-              completed: true,
-            },
-            {
-              id: `${Math.random()}${Date.now()}`,
-              name: "Avacado",
-              amount: 0.5,
-              unitType: "kg",
-              completed: true,
-            },
-          ],
-        },
-      ],
+      shopLists: [],
     },
     {
       id: `${Math.random()}${Date.now()}`,
       name: "One Time",
       completed: false,
-      shopLists: [
-        {
-          id: `${Math.random()}${Date.now()}`,
-          name: "Everything for Breakfast",
-          completed: false,
-          itemsToBuy: [
-            {
-              id: `${Math.random()}${Date.now()}`,
-              name: "Apple",
-              amount: 2,
-              completed: false,
-              unitType: "kg",
-            },
-            {
-              id: `${Math.random()}${Date.now()}`,
-              name: "Avacado",
-              amount: 0.5,
-              completed: false,
-              unitType: "kg",
-            },
-            {
-              id: `${Math.random()}${Date.now()}`,
-              name: "Rye",
-              amount: 3,
-              completed: true,
-              unitType: "pkg",
-            },
-            {
-              id: `${Math.random()}${Date.now()}`,
-              name: "Orangejuice",
-              amount: 1,
-              completed: true,
-              unitType: "litr",
-            },
-          ],
-        },
-      ],
+      shopLists: [],
     },
   ],
 };
@@ -101,7 +43,7 @@ export function listTypesReducer(state = initialState, { type, payload }) {
     case SET_APP_DATA:
       return {
         ...state,
-        ...payload.lists,
+        listTypes: [...payload.shopList.listTypes],
       };
 
     case ADD_NEW_LIST:

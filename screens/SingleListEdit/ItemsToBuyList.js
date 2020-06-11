@@ -3,6 +3,7 @@ import { StyleSheet, View, FlatList } from "react-native";
 
 import { COLORS } from "../../styles/colors";
 import { ItemToBuyCardEdit } from "../../components";
+import { log } from "react-native-reanimated";
 export const ItemsToBuyList = ({
   route,
   sortedList,
@@ -26,7 +27,10 @@ export const ItemsToBuyList = ({
         >
           <ItemToBuyCardEdit
             isEditMode={route.params.isEditMode}
-            onLongPress={() => toggleItemHandler(item.id)}
+            onLongPress={() => {
+              console.log("doneeeeeee- ----------");
+              toggleItemHandler(item.id);
+            }}
             deleteHandler={() => deleteHandler(item.id)}
             goEditScreen={() => goEditScreenHandler(item)}
             key={item.id}

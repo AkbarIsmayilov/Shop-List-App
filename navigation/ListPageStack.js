@@ -47,14 +47,16 @@ export const ListPageStack = ({ route, navigation }) => {
               <MaterialIcons
                 style={{ marginRight: 15 }}
                 name="edit"
-                onPress={() =>
+                onPress={() => {
+                  console.log(route);
+
                   navigation.navigate("SingleListEdit", {
                     title: route.params.title,
                     sectionId: route.params.sectionId,
                     listId: route.params.listId,
                     isEditMode: true,
-                  })
-                }
+                  });
+                }}
                 color="#fff"
                 size={30}
               />

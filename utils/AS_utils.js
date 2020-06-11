@@ -6,7 +6,7 @@ const setAppData = (payload) => ({
   payload,
 });
 
-const AS_DATA_KEY = "shop-list-data";
+const AS_DATA_KEY = "shop-lists-data";
 
 export async function updateAS(store) {
   console.log(
